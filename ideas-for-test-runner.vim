@@ -43,32 +43,3 @@ let g:spec_command = 'VtrSendCommandToRunner {preloader} {runner} {options} {pat
 " - add default maps for these with overrides (hasmapto etc)
 
 " :RunMostRecentSpec (not public, because we automatically do this for " you!)
-
-function! s:SpecCommand(is_focused)
-  let runner = s:Runner()
-  let preloader = s:Preloader(runner)
-  let options = s:Options(runner)
-  let path = s:Path()
-  let focus = s:Focus(runner, a:is_focused)
-
-  " lots of substitute() goes here
-  return Interpolate(runner, preloader, options, path, focus)
-endfunction
-
-function! s:RunNearestSpec()
-  call s:RunSpecCommand(SpecCommand('focused'))
-endfunction
-
-function! s:RunCurrentFile()
-  call s:RunSpecCommand(SpecCommand('unfocused'))
-endfunction
-
-function! s:RunSpecCommand(command)
-  " cache command as 'last command run'
-  " let s:last_command = a:command
-  execute a:command
-endfunction
-
-function! s:RunSuite()
-  " just run 'rake'
-endfunction
