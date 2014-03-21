@@ -10,13 +10,8 @@ Vimrunner::RSpec.configure do |config|
   config.start_vim do
     vim = Vimrunner.start
 
-    plugin_path = File.join(ROOT, 'spec', 'plugin')
-    vim.add_plugin(plugin_path, 'echo_plugin.vim')
-    vim.command 'let g:spec_runner_context=EchoToOutputTxt'
+    vim.add_plugin(File.join(ROOT, 'plugin'), 'spec-runner.vim')
 
     vim
   end
-end
-
-RSpec.configure do |config|
 end
