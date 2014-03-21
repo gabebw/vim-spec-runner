@@ -1,5 +1,3 @@
-let g:spec_runner_command='{preloader} {runner} {path}{focus}'
-
 function! s:RunCurrentFile()
   call s:RunSpecCommand(SpecCommand('unfocused'))
 endfunction

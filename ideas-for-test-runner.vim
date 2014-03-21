@@ -1,9 +1,3 @@
-" Testing
-"
-" https://github.com/AndrewRadev/vimrunner
-" Set context to a custom command that does `:!echo string > my-file.txt`
-
-
 " *** You always need {runner} {path} ***
 " If you don't use a preloader, leave out {preloader}
 " If you don't want to run individual specs, leave out {focus} too
@@ -37,9 +31,14 @@ let g:spec_command = 'VtrSendCommandToRunner {preloader} {runner} {options} {pat
 " konacha =>
 
 " Public API is (commands not functions):
-" :RunNearestSpec
-" :RunCurrentFile
-" :RunSuite
+" :RunNearestSpec } RunMostRecentSpec is implicit in both
+" :RunCurrentFile }
 " - add default maps for these with overrides (hasmapto etc)
+" Public variable API: Just one, `g:spec_runner_executor`
+  " Default: let g:spec_runner_executor='!echo {command} && {command}'
+  " let g:spec_runner_executor=":call Send_to_Tslime('{command}')<CR>"
+  " let g:spec_runner_executor=":VtrCommand '{command}'"
+  " Not public:
+  " let s:spec_runner_command='{preloader} {runner} {path}{focus}'
 
 " :RunMostRecentSpec (not public, because we automatically do this for " you!)
