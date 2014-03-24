@@ -42,6 +42,24 @@ describe 'An RSpec file' do
     end
   end
 
+  context 'runner' do
+    it 'is "rspec" when in an rspec file' do
+      vim.edit 'my_spec.rb'
+
+      vim.command 'RunCurrentFile'
+
+      expect(command).to start_with 'rspec'
+    end
+
+    it 'is not "rspec" when not in an rspec file' do
+      vim.edit 'something_strange'
+
+      vim.command 'RunCurrentFile'
+
+      expect(command).not_to include 'rspec'
+    end
+  end
+
   def command
     IO.read('command.txt').strip
   end

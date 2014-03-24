@@ -23,7 +23,11 @@ function! s:SpecCommand(is_focused)
 endfunction
 
 function! s:Runner()
-  return 'rspec'
+  if match(@%, '_spec.rb$') != -1
+    return 'rspec'
+  else
+    return ''
+  endif
 endfunction
 
 function! s:Preloader(runner)
