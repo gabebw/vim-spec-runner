@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe 'An RSpec file' do
   before do
-    configure_to_echo_command_to('output.txt')
+    configure_to_echo_command_to('command.txt')
   end
 
   context 'runner' do
     it 'is detected correctly' do
       run_all_specs
 
-      expect(output).to include 'rspec'
+      expect(command).to include 'rspec'
     end
   end
 
@@ -17,7 +17,7 @@ describe 'An RSpec file' do
     it 'is blank by default' do
       run_all_specs
 
-      expect(output).to start_with 'rspec'
+      expect(command).to start_with 'rspec'
     end
 
     it 'is "zeus" when a zeus.json file is present' do
@@ -25,7 +25,7 @@ describe 'An RSpec file' do
 
       run_all_specs
 
-      expect(output).to start_with 'zeus'
+      expect(command).to start_with 'zeus'
     end
 
     it 'is "spring" when spring-commands-rspec is in the Gemfile.lock' do
@@ -38,12 +38,12 @@ describe 'An RSpec file' do
 
       run_all_specs
 
-      expect(output).to start_with 'spring'
+      expect(command).to start_with 'spring'
     end
   end
 
-  def output
-    IO.read('output.txt').strip
+  def command
+    IO.read('command.txt').strip
   end
 
   def create_file_in_root(name, contents='')
