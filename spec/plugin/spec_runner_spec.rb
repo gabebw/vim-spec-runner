@@ -59,6 +59,20 @@ describe 'Vim Spec Runner' do
       expect(command).to start_with 'zeus'
     end
 
+    it 'is "zeus" even when Vim is not in the same directory as zeus.json' do
+      subdirectory = 'sub/directory'
+      create_file_in_root 'zeus.json'
+      in_vim_root do
+        create_git_repo
+        FileUtils.mkdir_p subdirectory
+      end
+
+      vim.command "cd #{subdirectory}"
+      run_all_specs
+
+      expect(command(File.join(subdirectory, 'command.txt'))).to start_with 'zeus'
+    end
+
     it 'is "spring" when spring-commands-rspec is in the Gemfile.lock' do
       create_file_in_root 'Gemfile.lock', <<-GEMFILE
         GEM
@@ -136,5 +150,9 @@ describe 'Vim Spec Runner' do
 
   def vim_directory
     vim.command('pwd')
+  end
+
+  def create_git_repo
+    system 'git init >/dev/null'
   end
 end

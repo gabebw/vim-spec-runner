@@ -2,6 +2,7 @@ let s:spec_runner_command = '{preloader} {runner} {path}{focus}'
 
 let s:FOCUSED = 1
 let s:UNFOCUSED = 0
+let s:COMMAND_FAILED = -1
 
 if !exists('g:spec_runner_executor')
   let g:spec_runner_executor = '!echo "{command}" && command'
@@ -46,7 +47,7 @@ function! s:Runner()
 endfunction
 
 function! s:Preloader(runner)
-  if filereadable('zeus.json')
+  if filereadable('zeus.json') || s:FileInProjectRoot('zeus.json')
     return 'zeus'
   elseif s:FileContains('Gemfile.lock', 'spring-commands-rspec')
     return 'spring'
@@ -69,6 +70,32 @@ endfunction
 
 function! s:FileContains(filename, text)
   return filereadable(a:filename) && match(readfile(a:filename), a:text) != -1
+endfunction
+
+function! s:FileInProjectRoot(filename)
+  return filereadable(s:ProjectRoot() . '/' . a:filename)
+endfunction
+
+function! s:ProjectRoot()
+  let git_root = s:GitRoot()
+  if git_root !=# s:COMMAND_FAILED
+    return git_root
+  else
+    return '.'
+  endif
+endfunction
+
+function! s:GitRoot()
+  let git_root = s:StripNewline(system('git rev-parse --show-toplevel'))
+  if v:shell_error ==# 0
+    return git_root
+  else
+    return s:COMMAND_FAILED
+  endif
+endfunction
+
+function! s:StripNewline(string)
+  return substitute(a:string, "\n", '', '')
 endfunction
 
 function! s:warn(warning_message)
