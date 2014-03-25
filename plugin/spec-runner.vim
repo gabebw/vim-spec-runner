@@ -1,4 +1,4 @@
-let s:spec_runner_command = '"{preloader} {runner} {options} {path}{focus}"'
+let s:spec_runner_command = '"{preloader} {runner} {path}{focus}"'
 
 if !exists('g:spec_runner_executor')
   let g:spec_runner_executor = '!echo {command} && command'
@@ -16,11 +16,10 @@ endfunction
 function! s:SpecCommand(is_focused)
   let runner = s:Runner()
   let preloader = s:Preloader(runner)
-  let options = s:Options(runner)
   let path = s:Path()
   let focus = s:Focus(runner, a:is_focused)
 
-  return s:InterpolateCommand(runner, preloader, options, path, focus)
+  return s:InterpolateCommand(runner, preloader, path, focus)
 endfunction
 
 function! s:Runner()
@@ -37,10 +36,6 @@ function! s:Preloader(runner)
   endif
 endfunction
 
-function! s:Options(runner)
-  return ''
-endfunction
-
 function! s:Path()
   return ''
 endfunction
@@ -53,12 +48,11 @@ function! s:FileContains(filename, text)
   return filereadable(a:filename) && match(readfile(a:filename), a:text) != -1
 endfunction
 
-function! s:InterpolateCommand(runner, preloader, options, path, focus)
+function! s:InterpolateCommand(runner, preloader, path, focus)
   let result=s:spec_runner_command
   let map={
         \ '{runner}' : a:runner,
         \ '{preloader}' : a:preloader,
-        \ '{options}' : a:options,
         \ '{path}' : a:path,
         \ '{focus}' : a:focus,
         \ }
