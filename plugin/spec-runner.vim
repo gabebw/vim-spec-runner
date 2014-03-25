@@ -16,17 +16,25 @@ function! s:RunNearestSpec()
 endfunction
 
 function! s:RunSpecCommand(command)
-  let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
-  execute executable_command
+  if empty(a:command)
+    call s:warn('Unable to determine correct spec runner')
+  else
+    let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
+    execute executable_command
+  endif
 endfunction
 
 function! s:SpecCommand(is_focused)
   let runner = s:Runner()
-  let preloader = s:Preloader(runner)
-  let path = s:Path()
-  let focus = s:Focus(runner, a:is_focused)
+  if empty(runner)
+    return ''
+  else
+    let preloader = s:Preloader(runner)
+    let path = s:Path()
+    let focus = s:Focus(runner, a:is_focused)
 
-  return s:InterpolateCommand(runner, preloader, path, focus)
+    return s:InterpolateCommand(runner, preloader, path, focus)
+  endif
 endfunction
 
 function! s:Runner()
@@ -61,6 +69,14 @@ endfunction
 
 function! s:FileContains(filename, text)
   return filereadable(a:filename) && match(readfile(a:filename), a:text) != -1
+endfunction
+
+function! s:warn(warning_message)
+  let full_error_message = 'vim-spec-runner: ' . a:warning_message
+  echohl Error
+  echom full_error_message
+  echohl None
+  let v:errmsg = full_error_message
 endfunction
 
 function! s:InterpolateCommand(runner, preloader, path, focus)

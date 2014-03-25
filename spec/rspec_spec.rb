@@ -55,14 +55,6 @@ describe 'An RSpec file' do
 
       expect(command).to start_with 'rspec'
     end
-
-    it 'is not "rspec" when not in an rspec file' do
-      vim.edit 'something_strange'
-
-      vim.command 'RunCurrentFile'
-
-      expect(command).not_to include 'rspec'
-    end
   end
 
   context 'path' do
