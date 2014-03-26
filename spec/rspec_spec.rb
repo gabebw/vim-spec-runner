@@ -62,6 +62,15 @@ describe 'An RSpec file' do
     end
   end
 
+  context 'focus' do
+    it 'includes the line number' do
+      vim.edit 'spec/user_spec.rb'
+      vim.command 'RunNearestSpec'
+
+      expect(command).to include ':1'
+    end
+  end
+
   def command
     IO.read('command.txt').strip
   end

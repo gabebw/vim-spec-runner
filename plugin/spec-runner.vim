@@ -1,11 +1,18 @@
 let s:spec_runner_command = '"{preloader} {runner} {path}{focus}"'
 
+let s:FOCUSED = 1
+let s:UNFOCUSED = 0
+
 if !exists('g:spec_runner_executor')
   let g:spec_runner_executor = '!echo {command} && command'
 endif
 
 function! s:RunCurrentFile()
-  call s:RunSpecCommand(s:SpecCommand('unfocused'))
+  call s:RunSpecCommand(s:SpecCommand(s:UNFOCUSED))
+endfunction
+
+function! s:RunNearestSpec()
+  call s:RunSpecCommand(s:SpecCommand(s:FOCUSED))
 endfunction
 
 function! s:RunSpecCommand(command)
@@ -44,8 +51,12 @@ function! s:Path()
   return @%
 endfunction
 
-function! s:Focus(runner, is_focused)
-  return ''
+function! s:Focus(runner, focused)
+  if a:focused
+    return ':'.line('.')
+  else
+    return ''
+  endif
 endfunction
 
 function! s:FileContains(filename, text)
@@ -68,3 +79,4 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
 endfunction
 
 command! RunCurrentFile call s:RunCurrentFile()
+command! RunNearestSpec call s:RunNearestSpec()
