@@ -1,4 +1,4 @@
-let s:spec_runner_command = '"{preloader} {runner} {path}{focus}"'
+let s:spec_runner_command = '{preloader} {runner} {path}{focus}'
 
 let s:FOCUSED = 1
 let s:UNFOCUSED = 0
@@ -64,8 +64,8 @@ function! s:FileContains(filename, text)
 endfunction
 
 function! s:InterpolateCommand(runner, preloader, path, focus)
-  let result=s:spec_runner_command
-  let map={
+  let result = s:spec_runner_command
+  let map = {
         \ '{runner}' : a:runner,
         \ '{preloader}' : a:preloader,
         \ '{path}' : a:path,
@@ -75,7 +75,7 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
     let result = substitute(result, placeholder, value, 'g')
   endfor
 
-  return result
+  return '"' . substitute(result, '^\s', '', '') . '"'
 endfunction
 
 command! RunCurrentFile call s:RunCurrentFile()

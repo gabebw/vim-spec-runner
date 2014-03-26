@@ -72,7 +72,7 @@ describe 'An RSpec file' do
   end
 
   def command
-    IO.read('command.txt').strip
+    IO.read('command.txt').chomp
   end
 
   def create_file_in_root(name, contents='')
