@@ -52,6 +52,16 @@ describe 'An RSpec file' do
     end
   end
 
+  context 'path' do
+    it 'is the path to the spec file' do
+      spec_file = 'spec/features/user_navigates_spec.rb'
+      vim.edit spec_file
+      vim.command 'RunCurrentFile'
+
+      expect(command).to include spec_file
+    end
+  end
+
   def command
     IO.read('command.txt').strip
   end

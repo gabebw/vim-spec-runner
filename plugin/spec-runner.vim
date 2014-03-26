@@ -41,7 +41,7 @@ function! s:Preloader(runner)
 endfunction
 
 function! s:Path()
-  return ''
+  return @%
 endfunction
 
 function! s:Focus(runner, is_focused)
