@@ -4,7 +4,7 @@ let s:FOCUSED = 1
 let s:UNFOCUSED = 0
 
 if !exists('g:spec_runner_executor')
-  let g:spec_runner_executor = '!echo {command} && command'
+  let g:spec_runner_executor = '!echo "{command}" && command'
 endif
 
 function! s:RunCurrentFile()
@@ -75,7 +75,7 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
     let result = substitute(result, placeholder, value, 'g')
   endfor
 
-  return '"' . substitute(result, '^\s', '', '') . '"'
+  return substitute(result, '^\s', '', '')
 endfunction
 
 command! RunCurrentFile call s:RunCurrentFile()
