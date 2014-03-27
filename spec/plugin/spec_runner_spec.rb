@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'An RSpec file' do
+describe 'Vim Spec Runner' do
   before do
     configure_to_echo_command_to('command.txt')
   end
@@ -18,6 +18,32 @@ describe 'An RSpec file' do
     end
   end
 
+  context 'runner' do
+    context 'none identified' do
+      it 'does not run the spec command' do
+        run_command_in_unknown_file
+
+        expect(no_command_was_run).to be_true
+      end
+
+      it 'alerts the user that it could not run the command' do
+        run_command_in_unknown_file
+
+        expect(last_vim_error).to match /unable to determine correct spec runner/i
+      end
+    end
+
+    context 'an rspec file' do
+      it 'uses rspec as the runner' do
+        vim.edit 'my_spec.rb'
+
+        vim.command 'RunCurrentFile'
+
+        expect(command).to start_with 'rspec'
+      end
+    end
+  end
+
   context 'preloader' do
     it 'is blank by default' do
       run_all_specs
@@ -25,7 +51,7 @@ describe 'An RSpec file' do
       expect(command).to start_with 'rspec'
     end
 
-    it 'is "zeus" when a zeus.json file is present' do
+    it 'uses "zeus" when a zeus.json file is present' do
       create_file_in_root 'zeus.json'
 
       run_all_specs
@@ -44,16 +70,6 @@ describe 'An RSpec file' do
       run_all_specs
 
       expect(command).to start_with 'spring'
-    end
-  end
-
-  context 'runner' do
-    it 'is "rspec" when in an rspec file' do
-      vim.edit 'my_spec.rb'
-
-      vim.command 'RunCurrentFile'
-
-      expect(command).to start_with 'rspec'
     end
   end
 
@@ -76,8 +92,34 @@ describe 'An RSpec file' do
     end
   end
 
+  def run_all_specs
+    vim.edit 'my_spec.rb'
+    vim.command 'RunCurrentFile'
+  end
+
   def command(command_file = 'command.txt')
     IO.read(command_file).chomp
+  end
+
+  def configure_to_echo_command_to(file_name)
+    vim.command "let g:spec_runner_executor='#{spec_runner_executor(file_name)}'"
+  end
+
+  def spec_runner_executor(file_name)
+    "!echo {command} > #{file_name}"
+  end
+
+  def run_command_in_unknown_file
+    vim.edit 'random_file.rb'
+    vim.command 'RunCurrentFile'
+  end
+
+  def no_command_was_run
+    !File.exists? 'command.txt'
+  end
+
+  def last_vim_error
+    vim.command 'echo v:errmsg'
   end
 
   def create_file_in_root(name, contents='')
@@ -94,18 +136,5 @@ describe 'An RSpec file' do
 
   def vim_directory
     vim.command('pwd')
-  end
-
-  def configure_to_echo_command_to(file_name)
-    vim.command "let g:spec_runner_executor='#{spec_runner_executor(file_name)}'"
-  end
-
-  def run_all_specs
-    vim.edit 'my_spec.rb'
-    vim.command 'RunCurrentFile'
-  end
-
-  def spec_runner_executor(file_name)
-    "!echo {command} > #{file_name}"
   end
 end
