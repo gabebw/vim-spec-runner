@@ -5,6 +5,19 @@ describe 'An RSpec file' do
     configure_to_echo_command_to('command.txt')
   end
 
+  context 'configuration' do
+    it 'uses the command executor override if present' do
+      executor_command = '!echo "{command}" > specific_file.txt'
+      vim.command "let g:spec_runner_executor='#{executor_command}'"
+
+      vim.edit 'sample_spec.rb'
+      vim.command 'RunCurrentFile'
+
+      expect(File.exists?('command.txt')).to be_false
+      expect(command('specific_file.txt')).to include 'rspec'
+    end
+  end
+
   context 'preloader' do
     it 'is blank by default' do
       run_all_specs
@@ -71,8 +84,8 @@ describe 'An RSpec file' do
     end
   end
 
-  def command
-    IO.read('command.txt').chomp
+  def command(command_file = 'command.txt')
+    IO.read(command_file).chomp
   end
 
   def create_file_in_root(name, contents='')
