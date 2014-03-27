@@ -6,8 +6,6 @@ A configurable spec runner for Vim.
 
     rake
 
-## Vim problems on OSX
-
-If you get errors about `Vimrunner`, try installing MacVim:
+If you get errors on OSX about `Vimrunner`, try installing MacVim then re-running the specs:
 
     $ brew install macvim
