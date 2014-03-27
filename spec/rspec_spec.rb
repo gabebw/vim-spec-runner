@@ -5,14 +5,6 @@ describe 'An RSpec file' do
     configure_to_echo_command_to('command.txt')
   end
 
-  context 'runner' do
-    it 'is detected correctly' do
-      run_all_specs
-
-      expect(command).to include 'rspec'
-    end
-  end
-
   context 'preloader' do
     it 'is blank by default' do
       run_all_specs
