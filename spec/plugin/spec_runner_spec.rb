@@ -134,6 +134,29 @@ describe 'Vim Spec Runner' do
     end
   end
 
+  context 'autowrite' do
+    it 'writes the file before running it' do
+      spec_file = 'my_spec.rb'
+      vim.edit spec_file
+
+      vim.command 'RunCurrentSpecFile'
+
+      expect(file_was_written(spec_file)).to be_true
+    end
+
+    it 'does not write the file if g:disable_write_on_spec_run is truthy' do
+      spec_file = 'my_spec.rb'
+      with_clean_vim do |clean_vim|
+        clean_vim.edit spec_file
+        clean_vim.command 'let g:disable_write_on_spec_run = 1'
+
+        clean_vim.command 'RunCurrentSpecFile'
+      end
+
+      expect(file_was_written(spec_file)).to be_false
+    end
+  end
+
   def run_spec_file(spec_file = 'my_spec.rb', vim_instance = vim)
     vim_instance.edit spec_file
     vim_instance.command 'RunCurrentSpecFile'
@@ -158,6 +181,10 @@ describe 'Vim Spec Runner' do
 
   def no_command_was_run
     ! File.exists?('command.txt')
+  end
+
+  def file_was_written(file_name)
+    File.exist?(file_name)
   end
 
   def last_vim_error(vim_instance = vim)

@@ -41,7 +41,16 @@ endfunction
 function! s:RunSpecCommand(command)
   let s:most_recent_command = a:command
   let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
+  call s:WriteIfEnabled()
   execute executable_command
+endfunction
+
+function! s:WriteIfEnabled()
+  if exists('g:disable_write_on_spec_run') && g:disable_write_on_spec_run
+    " Don't write.
+  else
+    write
+  endif
 endfunction
 
 function! s:SpecCommand(is_focused)
