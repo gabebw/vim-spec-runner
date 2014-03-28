@@ -134,16 +134,6 @@ describe 'Vim Spec Runner' do
     end
   end
 
-  context 'path' do
-    it 'is the path to the spec file' do
-      spec_file = 'spec/features/user_navigates_spec.rb'
-
-      run_spec_file spec_file
-
-      expect(command).to include spec_file
-    end
-  end
-
   def run_spec_file(spec_file = 'my_spec.rb', vim_instance = vim)
     vim_instance.edit spec_file
     vim_instance.command 'RunCurrentSpecFile'
