@@ -40,25 +40,17 @@ endfunction
 
 function! s:RunSpecCommand(command)
   let s:most_recent_command = a:command
-  if empty(a:command)
-    call s:warn(s:WARNING_UNABLE_TO_DETERMINE_RUNNER)
-  else
-    let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
-    execute executable_command
-  endif
+  let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
+  execute executable_command
 endfunction
 
 function! s:SpecCommand(is_focused)
-  if s:InSpecFile()
-    let runner = s:Runner()
-    let preloader = s:Preloader(runner)
-    let path = s:Path()
-    let focus = s:Focus(runner, a:is_focused)
+  let runner = s:Runner()
+  let preloader = s:Preloader(runner)
+  let path = s:Path()
+  let focus = s:Focus(runner, a:is_focused)
 
-    return s:InterpolateCommand(runner, preloader, path, focus)
-  else
-    return s:NOT_IN_SPEC_FILE
-  endif
+  return s:InterpolateCommand(runner, preloader, path, focus)
 endfunction
 
 function! s:InSpecFile()
