@@ -121,5 +121,5 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
   return substitute(result, '^\s', '', '')
 endfunction
 
-command! RunCurrentFile call s:RunCurrentFile()
+command! RunCurrentSpecFile call s:RunCurrentFile()
 command! RunNearestSpec call s:RunNearestSpec()

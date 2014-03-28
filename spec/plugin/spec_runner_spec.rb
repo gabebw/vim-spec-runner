@@ -10,8 +10,7 @@ describe 'Vim Spec Runner' do
       executor_command = '!echo "{command}" > specific_file.txt'
       vim.command "let g:spec_runner_executor='#{executor_command}'"
 
-      vim.edit 'sample_spec.rb'
-      vim.command 'RunCurrentFile'
+      run_spec_file
 
       expect(File.exists?('command.txt')).to be_false
       expect(command('specific_file.txt')).to include 'rspec'
@@ -35,9 +34,7 @@ describe 'Vim Spec Runner' do
 
     context 'an rspec file' do
       it 'uses rspec as the runner' do
-        vim.edit 'my_spec.rb'
-
-        vim.command 'RunCurrentFile'
+        run_spec_file 'a_sample_spec.rb'
 
         expect(command).to start_with 'rspec'
       end
@@ -46,7 +43,7 @@ describe 'Vim Spec Runner' do
 
   context 'preloader' do
     it 'is blank by default' do
-      run_all_specs
+      run_spec_file
 
       expect(command).to start_with 'rspec'
     end
@@ -54,7 +51,7 @@ describe 'Vim Spec Runner' do
     it 'uses "zeus" when a zeus.json file is present' do
       create_file_in_root 'zeus.json'
 
-      run_all_specs
+      run_spec_file
 
       expect(command).to start_with 'zeus'
     end
@@ -68,7 +65,7 @@ describe 'Vim Spec Runner' do
       end
 
       vim.command "cd #{subdirectory}"
-      run_all_specs
+      run_spec_file
 
       expect(command(File.join(subdirectory, 'command.txt'))).to start_with 'zeus'
     end
@@ -81,7 +78,7 @@ describe 'Vim Spec Runner' do
             spring-commands-rspec (1.2.5)
       GEMFILE
 
-      run_all_specs
+      run_spec_file
 
       expect(command).to start_with 'spring'
     end
@@ -90,8 +87,8 @@ describe 'Vim Spec Runner' do
   context 'path' do
     it 'is the path to the spec file' do
       spec_file = 'spec/features/user_navigates_spec.rb'
-      vim.edit spec_file
-      vim.command 'RunCurrentFile'
+
+      run_spec_file spec_file
 
       expect(command).to include spec_file
     end
@@ -106,9 +103,9 @@ describe 'Vim Spec Runner' do
     end
   end
 
-  def run_all_specs
-    vim.edit 'my_spec.rb'
-    vim.command 'RunCurrentFile'
+  def run_spec_file(spec_file = 'my_spec.rb')
+    vim.edit spec_file
+    vim.command 'RunCurrentSpecFile'
   end
 
   def command(command_file = 'command.txt')
@@ -124,8 +121,7 @@ describe 'Vim Spec Runner' do
   end
 
   def run_command_in_unknown_file
-    vim.edit 'random_file.rb'
-    vim.command 'RunCurrentFile'
+    run_spec_file 'random_file.rb'
   end
 
   def no_command_was_run
