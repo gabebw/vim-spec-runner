@@ -6,6 +6,16 @@ describe 'Vim Spec Runner' do
   end
 
   context ':RunCurrentSpecFile' do
+    context 'with a spec file' do
+      it 'runs the entire spec' do
+        vim.edit 'my_spec.rb'
+
+        vim.command 'RunCurrentSpecFile'
+
+        expect(command).to end_with 'my_spec.rb'
+      end
+    end
+
     it_should_behave_like 'a command with fallbacks', 'RunCurrentSpecFile'
   end
 
