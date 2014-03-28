@@ -3,22 +3,45 @@ let s:spec_runner_command = '{preloader} {runner} {path}{focus}'
 let s:FOCUSED = 1
 let s:UNFOCUSED = 0
 let s:COMMAND_FAILED = -1
+let s:NOT_IN_SPEC_FILE = -2
+let s:WARNING_UNABLE_TO_DETERMINE_RUNNER = 'Unable to determine correct spec runner'
 
-if !exists('g:spec_runner_executor')
-  let g:spec_runner_executor = '!echo "{command}" && command'
+if ! exists('g:spec_runner_executor')
+  let g:spec_runner_executor = '!echo "{command}" && {command}'
 endif
 
-function! s:RunCurrentFile()
-  call s:RunSpecCommand(s:SpecCommand(s:UNFOCUSED))
+function! s:RunCurrentSpecFile()
+  call s:RunIfInSpecFile(s:UNFOCUSED)
 endfunction
 
-function! s:RunNearestSpec()
-  call s:RunSpecCommand(s:SpecCommand(s:FOCUSED))
+function! s:RunFocusedSpec()
+  call s:RunIfInSpecFile(s:FOCUSED)
+endfunction
+
+function! s:RunIfInSpecFile(focused)
+  if s:InSpecFile()
+    call s:RunSpecCommand(s:SpecCommand(a:focused))
+  else
+    call s:RunMostRecentSpecOrWarn(s:WARNING_UNABLE_TO_DETERMINE_RUNNER)
+  endif
+endfunction
+
+function! s:RunMostRecentSpec()
+  call s:RunMostRecentSpecOrWarn('No previous spec command')
+endfunction
+
+function! s:RunMostRecentSpecOrWarn(warning_message)
+  if exists('s:most_recent_command')
+    call s:RunSpecCommand(s:most_recent_command)
+  else
+    call s:warn(a:warning_message)
+  endif
 endfunction
 
 function! s:RunSpecCommand(command)
+  let s:most_recent_command = a:command
   if empty(a:command)
-    call s:warn('Unable to determine correct spec runner')
+    call s:warn(s:WARNING_UNABLE_TO_DETERMINE_RUNNER)
   else
     let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
     execute executable_command
@@ -26,23 +49,27 @@ function! s:RunSpecCommand(command)
 endfunction
 
 function! s:SpecCommand(is_focused)
-  let runner = s:Runner()
-  if empty(runner)
-    return ''
-  else
+  if s:InSpecFile()
+    let runner = s:Runner()
     let preloader = s:Preloader(runner)
     let path = s:Path()
     let focus = s:Focus(runner, a:is_focused)
 
     return s:InterpolateCommand(runner, preloader, path, focus)
+  else
+    return s:NOT_IN_SPEC_FILE
   endif
+endfunction
+
+function! s:InSpecFile()
+  return s:Runner() !=# s:NOT_IN_SPEC_FILE
 endfunction
 
 function! s:Runner()
   if match(@%, '_spec.rb$') != -1
     return 'rspec'
   else
-    return ''
+    return s:NOT_IN_SPEC_FILE
   endif
 endfunction
 
@@ -121,5 +148,6 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
   return substitute(result, '^\s', '', '')
 endfunction
 
-command! RunCurrentSpecFile call s:RunCurrentFile()
-command! RunNearestSpec call s:RunNearestSpec()
+command! RunCurrentSpecFile call s:RunCurrentSpecFile()
+command! RunFocusedSpec call s:RunFocusedSpec()
+command! RunMostRecentSpec call s:RunMostRecentSpec()

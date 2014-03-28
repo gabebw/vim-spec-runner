@@ -5,6 +5,60 @@ describe 'Vim Spec Runner' do
     configure_to_echo_command_to('command.txt')
   end
 
+  context ':RunCurrentSpecFile' do
+    it_should_behave_like 'a command with fallbacks', 'RunCurrentSpecFile'
+  end
+
+  context ':RunMostRecentSpec' do
+    context 'with a previous spec run command' do
+      it 're-runs if the last command was run spec file' do
+        run_spec_file
+
+        original_command = purge_previous_command
+
+        vim.command 'RunMostRecentSpec'
+
+        expect(command).to eq original_command
+      end
+
+      it 're-runs RunFocusedSpec if that was the last call' do
+        vim.edit 'thing_spec.rb'
+        vim.command 'RunFocusedSpec'
+
+        original_command = purge_previous_command
+
+        vim.command 'RunMostRecentSpec'
+
+        expect(command).to eq original_command
+      end
+    end
+
+    context 'without a previous spec command' do
+      it 'runs nothing and warns the user' do
+        with_clean_vim do |clean_vim|
+          clean_vim.edit 'thing_spec.rb'
+          clean_vim.command 'RunMostRecentSpec'
+
+          expect(no_command_was_run).to be_true
+          expect(last_vim_error(clean_vim)).to match /no previous spec command/i
+        end
+      end
+    end
+  end
+
+  context ':RunFocusedSpec' do
+    context 'in a spec file' do
+      it 'runs the nearest spec' do
+        vim.edit 'sample_spec.rb'
+        vim.command 'RunFocusedSpec'
+
+        expect(command).to include 'sample_spec.rb:1'
+      end
+    end
+
+    it_should_behave_like 'a command with fallbacks', 'RunFocusedSpec'
+  end
+
   context 'configuration' do
     it 'uses the command executor override if present' do
       executor_command = '!echo "{command}" > specific_file.txt'
@@ -18,21 +72,7 @@ describe 'Vim Spec Runner' do
   end
 
   context 'runner' do
-    context 'none identified' do
-      it 'does not run the spec command' do
-        run_command_in_unknown_file
-
-        expect(no_command_was_run).to be_true
-      end
-
-      it 'alerts the user that it could not run the command' do
-        run_command_in_unknown_file
-
-        expect(last_vim_error).to match /unable to determine correct spec runner/i
-      end
-    end
-
-    context 'an rspec file' do
+    context 'with an rspec file' do
       it 'uses rspec as the runner' do
         run_spec_file 'a_sample_spec.rb'
 
@@ -94,18 +134,14 @@ describe 'Vim Spec Runner' do
     end
   end
 
-  context 'focus' do
-    it 'includes the line number' do
-      vim.edit 'spec/user_spec.rb'
-      vim.command 'RunNearestSpec'
-
-      expect(command).to include ':1'
-    end
+  def run_spec_file(spec_file = 'my_spec.rb', vim_instance = vim)
+    vim_instance.edit spec_file
+    vim_instance.command 'RunCurrentSpecFile'
   end
 
-  def run_spec_file(spec_file = 'my_spec.rb')
-    vim.edit spec_file
-    vim.command 'RunCurrentSpecFile'
+  def run_nearest_spec(spec_file = 'my_spec.rb', vim_instance = vim)
+    vim_instance.edit spec_file
+    vim_instance.command 'RunFocusedSpec'
   end
 
   def command(command_file = 'command.txt')
@@ -120,16 +156,12 @@ describe 'Vim Spec Runner' do
     "!echo {command} > #{file_name}"
   end
 
-  def run_command_in_unknown_file
-    run_spec_file 'random_file.rb'
-  end
-
   def no_command_was_run
-    !File.exists? 'command.txt'
+    ! File.exists?('command.txt')
   end
 
-  def last_vim_error
-    vim.command 'echo v:errmsg'
+  def last_vim_error(vim_instance = vim)
+    vim_instance.command 'echo v:errmsg'
   end
 
   def create_file_in_root(name, contents='')
@@ -144,8 +176,22 @@ describe 'Vim Spec Runner' do
     end
   end
 
+  def with_clean_vim
+    clean_vim = Vimrunner.start
+    clean_vim.add_plugin(File.join(ROOT, 'plugin'), 'spec-runner.vim')
+    yield(clean_vim)
+  ensure
+    clean_vim.kill
+  end
+
   def vim_directory
     vim.command('pwd')
+  end
+
+  def purge_previous_command(command_file = 'command.txt')
+    previous_command = command(command_file)
+    FileUtils.remove command_file
+    previous_command
   end
 
   def create_git_repo

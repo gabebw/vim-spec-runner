@@ -2,6 +2,8 @@ require 'rspec'
 require 'vimrunner'
 require 'vimrunner/rspec'
 
+Dir["spec/support/**/*.rb"].each { |f| require File.expand_path(f) }
+
 ROOT = File.expand_path('../..', __FILE__)
 
 Vimrunner::RSpec.configure do |config|
