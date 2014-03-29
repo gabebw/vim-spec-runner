@@ -1,4 +1,4 @@
-# Vim-spec-runner
+# Vim-spec-runner [![Build Status](https://travis-ci.org/gabebw/vim-spec-runner.svg?branch=master)](https://travis-ci.org/gabebw/vim-spec-runner)
 
 A configurable spec runner for Vim.
 
