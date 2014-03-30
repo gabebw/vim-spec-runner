@@ -2,20 +2,17 @@
 
 A configurable spec runner for Vim.
 
-Feature list:
-
 * Automatically detects and uses preloaders ([zeus] and [spring])
 * Can run the entire current file or a spec by line number
 * Can re-run most recent spec
 * If the current file is not a spec file, re-runs the most recent spec
-* Saves the spec file before running it
+* Saves the current file before running specs
 * Simple to use with any test runner, including Tmux test runners like
   [vim-tmux-runner]
 
 [zeus]: https://github.com/burke/zeus
 [spring]: https://github.com/rails/spring
 [vim-tmux-runner]: https://github.com/christoomey/vim-tmux-runner
-
 
 ## Installation
 
