@@ -46,7 +46,7 @@ run specs. By default, it echoes the command and then runs it:
 The `{command}` is replaced with the command to run. To use vim-tmux-runner.vim with this
 plugin, you might change the variable to this in your vimrc:
 
-    let g:spec_runner_executor = ':VtrSendCommandToRunner {command}'
+    let g:spec_runner_executor = "call VtrSendCommand('{command}')".
 
 This will run the command through tmux (but won't echo it).
 
