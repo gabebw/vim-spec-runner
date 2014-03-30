@@ -6,6 +6,16 @@ describe 'Vim Spec Runner' do
   end
 
   context ':RunCurrentSpecFile' do
+    it 'is mapped to <Leader>a' do
+      plug_map = '<Plug>RunCurrentSpecFile'
+
+      vim.edit 'my_spec.rb'
+
+      expect('<Leader>a').to normal_map_to(plug_map)
+      execute_plug_mapping(plug_map)
+      expect(command_was_run).to be_true
+    end
+
     context 'with a spec file' do
       it 'runs the entire spec' do
         vim.edit 'my_spec.rb'
@@ -20,6 +30,17 @@ describe 'Vim Spec Runner' do
   end
 
   context ':RunMostRecentSpec' do
+    it 'is mapped to <Leader>r' do
+      plug_map = '<Plug>RunMostRecentSpec'
+
+      run_spec_file
+      purge_previous_command
+
+      expect('<Leader>r').to normal_map_to(plug_map)
+      execute_plug_mapping(plug_map)
+      expect(command_was_run).to be_true
+    end
+
     context 'with a previous spec run command' do
       it 're-runs if the last command was run spec file' do
         run_spec_file
@@ -57,6 +78,17 @@ describe 'Vim Spec Runner' do
   end
 
   context ':RunFocusedSpec' do
+    it 'is mapped to <Leader>l' do
+      plug_map = '<Plug>RunFocusedSpec'
+
+      vim.edit 'my_spec.rb'
+
+      expect('<Leader>l').to normal_map_to(plug_map)
+      execute_plug_mapping(plug_map)
+      expect(command_was_run).to be_true
+    end
+
+
     context 'in a spec file' do
       it 'runs the nearest spec' do
         vim.edit 'sample_spec.rb'
@@ -180,7 +212,11 @@ describe 'Vim Spec Runner' do
   end
 
   def no_command_was_run
-    ! File.exists?('command.txt')
+    ! command_was_run
+  end
+
+  def command_was_run
+    File.exists?('command.txt')
   end
 
   def file_was_written(file_name)
@@ -219,6 +255,10 @@ describe 'Vim Spec Runner' do
     previous_command = command(command_file)
     FileUtils.remove command_file
     previous_command
+  end
+
+  def execute_plug_mapping(plug_mapping)
+    vim.command %{execute "normal \\#{plug_mapping}"}
   end
 
   def create_git_repo

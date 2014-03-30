@@ -152,3 +152,13 @@ endfunction
 command! RunCurrentSpecFile call s:RunCurrentSpecFile()
 command! RunFocusedSpec call s:RunFocusedSpec()
 command! RunMostRecentSpec call s:RunMostRecentSpec()
+
+" Define plug mappings (essentially place holders, not actually bound to keys)
+nnoremap <silent> <Plug>RunCurrentSpecFile :RunCurrentSpecFile<CR>
+nnoremap <silent> <Plug>RunFocusedSpec :RunFocusedSpec<CR>
+nnoremap <silent> <Plug>RunMostRecentSpec :RunMostRecentSpec<CR>
+
+" Default key mappings
+map <Leader>a <Plug>RunCurrentSpecFile
+map <Leader>l <Plug>RunFocusedSpec
+map <Leader>r <Plug>RunMostRecentSpec

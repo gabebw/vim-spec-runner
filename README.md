@@ -1,4 +1,5 @@
-# Vim-spec-runner [![Build Status](https://travis-ci.org/gabebw/vim-spec-runner.svg?branch=master)](https://travis-ci.org/gabebw/vim-spec-runner)
+Vim-spec-runner [![Build Status](https://travis-ci.org/gabebw/vim-spec-runner.svg?branch=master)](https://travis-ci.org/gabebw/vim-spec-runner)
+============================================================
 
 An efficient and intelligent spec runner for Vim.
 
@@ -10,7 +11,7 @@ configurations, and apps you use each day.
 * Efficient commands to run either a single spec, or a spec file
 * Explicit command allowing for re-running the last-run spec command
 * If the current file is not a spec file, re-runs the most recent spec
-* Simple to use with any test executor, including Tmux oneslike
+* Simple to use with any test executor, including Tmux ones like
   [vim-tmux-runner] or [tslime]
 * Automatically detects and uses preloaders ([zeus] and [spring])
 * Saves the current file before running specs
@@ -20,7 +21,8 @@ configurations, and apps you use each day.
 [vim-tmux-runner]: https://github.com/christoomey/vim-tmux-runner
 [tslime]: https://github.com/jgdavey/tslime.vim
 
-## Installation
+Installation
+------------
 
 With [vundle](https://github.com/gmarik/Vundle.vim):
 
@@ -28,7 +30,10 @@ With [vundle](https://github.com/gmarik/Vundle.vim):
 Bundle 'gabebw/vim-spec-runner'
 ```
 
-## Usage
+Usage
+-----
+
+### Commands
 
 There are three commands in the public API:
 
@@ -41,7 +46,41 @@ There are three commands in the public API:
 All three commands use the `g:spec_runner_executor` variable, which is explained
 in the "Configuration" section below.
 
-## Configuration
+### Default mappings
+
+By default, we give you these three mappings, all in normal mode:
+
+     Key         | Command to run
+     ----------- | --------------
+     `<Leader>a` | `RunCurrentSpecFile`
+     `<Leader>l` | `RunFocusedSpec`
+     `<Leader>r` | `RunMostRecentSpec`
+
+### Custom mappings
+
+To create your own custom mappings, we've defined mapping placeholders ([`<Plug>`
+maps][plug]) for each of the commands to make mapping easy. For example:
+
+```vim
+" We use `map` here (instead of `nnoremap`) because the <Plug> mappings already
+" use nnoremap. So even though you're typing `map`, it's a normal map.
+
+" Use <Leader>t to run the current spec file. Remember that this runs the most
+" recent spec if it's not in a spec file!
+map <Leader>t <Plug>RunCurrentSpecFile
+
+" Use <Leader>u to run the current line in a spec. Remember that this runs the
+" most recent spec if it's not in a spec file!
+map <Leader>t <Plug>RunFocusedSpec
+
+" Use <Leader>v to explicitly run the most recent spec
+map <Leader>v <Plug>RunMostRecentSpec
+```
+
+[plug]: http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_3)#Use_of_.3CPlug.3E
+
+Configuration
+-------------
 
 The `g:spec_runner_executor` variable is used by all three public commands to
 run specs. By default, it echoes the command and then runs it:
@@ -66,7 +105,8 @@ that:
 let g:disable_write_on_spec_run = 1
 ```
 
-## Running the plugin's tests
+Running the plugin's tests
+--------------------------
 
     rake
 
