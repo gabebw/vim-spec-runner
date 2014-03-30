@@ -9,11 +9,13 @@ Feature list:
 * Can re-run most recent spec
 * If the current file is not a spec file, re-runs the most recent spec
 * Saves the spec file before running it
-* Simple to use with any test runner, including Tmux test runners like [tslime]
+* Simple to use with any test runner, including Tmux test runners like
+  [vim-tmux-runner]
 
 [zeus]: https://github.com/burke/zeus
 [spring]: https://github.com/rails/spring
-[tslime]: https://github.com/jgdavey/tslime.vim
+[vim-tmux-runner]: https://github.com/christoomey/vim-tmux-runner
+
 
 ## Installation
 
@@ -41,10 +43,10 @@ run specs. By default, it echoes the command and then runs it:
 
     let g:spec_runner_executor = '!echo "{command}" && {command}'
 
-The `{command}` is replaced with the command to run. To use tslime.vim with this
+The `{command}` is replaced with the command to run. To use vim-tmux-runner.vim with this
 plugin, you might change the variable to this in your vimrc:
 
-    let g:spec_runner_executor = ':call Send_to_Tmux("{command}\n")'
+    let g:spec_runner_executor = ':VtrSendCommandToRunner {command}'
 
 This will run the command through tmux (but won't echo it).
 
