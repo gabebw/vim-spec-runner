@@ -6,6 +6,6 @@ before_install:
   - "sudo apt-get install vim-gnome"
   - "vim --version"
 install: bundle
-script: xvfb-run rake --format documentation
+script: xvfb-run bundle exec rspec --format documentation
 notifications:
   email: false
