@@ -56,6 +56,18 @@ By default, we give you these three mappings, all in normal mode:
      `<Leader>l` | `RunFocusedSpec`
      `<Leader>r` | `RunMostRecentSpec`
 
+If you define your own mappings to these commands like so:
+
+```vim
+" Must be done before Vundle runs
+map <Leader>t <Plug>RunCurrentSpecFile
+
+Bundle 'gabebw/vim-spec-runner'
+```
+
+...then the default mappings for the keys you've mapped will not be set.
+
+
 ### Custom mappings
 
 To create your own custom mappings, we've defined mapping placeholders ([`<Plug>`

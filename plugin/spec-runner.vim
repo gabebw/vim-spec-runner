@@ -149,6 +149,12 @@ function! s:InterpolateCommand(runner, preloader, path, focus)
   return substitute(result, '^\s', '', '')
 endfunction
 
+function! s:MapIfUnmapped(key, mapping)
+  if ! hasmapto(a:mapping)
+    execute 'map <Leader>'.a:key.' '.a:mapping
+  endif
+endfunction
+
 command! RunCurrentSpecFile call s:RunCurrentSpecFile()
 command! RunFocusedSpec call s:RunFocusedSpec()
 command! RunMostRecentSpec call s:RunMostRecentSpec()
@@ -159,6 +165,6 @@ nnoremap <silent> <Plug>RunFocusedSpec :RunFocusedSpec<CR>
 nnoremap <silent> <Plug>RunMostRecentSpec :RunMostRecentSpec<CR>
 
 " Default key mappings
-map <Leader>a <Plug>RunCurrentSpecFile
-map <Leader>l <Plug>RunFocusedSpec
-map <Leader>r <Plug>RunMostRecentSpec
+call s:MapIfUnmapped('a', '<Plug>RunCurrentSpecFile')
+call s:MapIfUnmapped('l', '<Plug>RunFocusedSpec')
+call s:MapIfUnmapped('r', '<Plug>RunMostRecentSpec')

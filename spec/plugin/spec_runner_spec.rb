@@ -16,6 +16,16 @@ describe 'Vim Spec Runner' do
       expect(command_was_run).to be_true
     end
 
+    it 'does not create a mapping if one already exists' do
+      using_vim_without_plugin do |clean_vim|
+        clean_vim.edit 'my_spec.rb'
+        clean_vim.command 'nnoremap <Leader>x <Plug>RunCurrentSpecFile'
+        load_plugin(clean_vim)
+
+        expect(clean_vim).to have_no_normal_map_from('<Leader>a')
+      end
+    end
+
     context 'with a spec file' do
       it 'runs the entire spec' do
         vim.edit 'my_spec.rb'
@@ -39,6 +49,16 @@ describe 'Vim Spec Runner' do
       expect('<Leader>r').to normal_map_to(plug_map)
       execute_plug_mapping(plug_map)
       expect(command_was_run).to be_true
+    end
+
+    it 'does not create a mapping if one already exists' do
+      using_vim_without_plugin do |clean_vim|
+        clean_vim.edit 'my_spec.rb'
+        clean_vim.command 'nnoremap <Leader>x <Plug>RunMostRecentSpec'
+        load_plugin(clean_vim)
+
+        expect(clean_vim).to have_no_normal_map_from('<Leader>r')
+      end
     end
 
     context 'with a previous spec run command' do
@@ -88,6 +108,15 @@ describe 'Vim Spec Runner' do
       expect(command_was_run).to be_true
     end
 
+    it 'does not create a mapping if one already exists' do
+      using_vim_without_plugin do |clean_vim|
+        clean_vim.edit 'my_spec.rb'
+        clean_vim.command 'nnoremap <Leader>x <Plug>RunFocusedSpec'
+        load_plugin(clean_vim)
+
+        expect(clean_vim).to have_no_normal_map_from('<Leader>l')
+      end
+    end
 
     context 'in a spec file' do
       it 'runs the nearest spec' do
@@ -245,6 +274,17 @@ describe 'Vim Spec Runner' do
     yield(clean_vim)
   ensure
     clean_vim.kill
+  end
+
+  def using_vim_without_plugin
+    cleanest_vim = Vimrunner.start
+    yield(cleanest_vim)
+  ensure
+    cleanest_vim.kill
+  end
+
+  def load_plugin(vim_instance)
+    vim_instance.add_plugin(File.join(ROOT, 'plugin'), 'spec-runner.vim')
   end
 
   def vim_directory
