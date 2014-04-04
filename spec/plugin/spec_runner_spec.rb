@@ -26,13 +26,66 @@ describe 'Vim Spec Runner' do
       end
     end
 
-    context 'with a spec file' do
+    context 'with an RSpec file' do
       it 'runs the entire spec' do
         vim.edit 'my_spec.rb'
 
         vim.command 'RunCurrentSpecFile'
 
         expect(command).to end_with 'my_spec.rb'
+      end
+    end
+
+    context 'with the teaspoon gem installed' do
+      before do
+        create_gemfile_with('teaspoon')
+      end
+
+      %w(.coffee .js.coffee .js).each do |extension|
+        context "with a JS spec ending in #{extension}" do
+          it 'runs teaspoon directly' do
+            spec = "person_spec#{extension}"
+            vim.edit spec
+
+            vim.command 'RunCurrentSpecFile'
+
+            expect(command).to eq "teaspoon #{spec}"
+          end
+        end
+      end
+
+      context 'and zeus installed' do
+        it 'uses zeus rake teaspoon' do
+          set_up_zeus
+
+          vim.edit "person_spec.coffee"
+          vim.command 'RunCurrentSpecFile'
+
+          expect(command).to start_with 'zeus rake teaspoon'
+        end
+      end
+
+      context 'and the spring-commands-teaspoon gem installed' do
+        it 'uses spring' do
+          set_up_spring_for('teaspoon')
+
+          vim.edit "person_spec.coffee"
+          vim.command 'RunCurrentSpecFile'
+
+          expect(command).to start_with 'spring teaspoon'
+        end
+      end
+    end
+
+    context 'without the teaspoon gem installed' do
+      it 'does not run any command for JS' do
+        with_clean_vim do |clean_vim|
+          clean_vim.edit "person_spec.coffee"
+
+          clean_vim.command 'RunCurrentSpecFile'
+
+          expect(no_command_was_run).to be_true
+        end
       end
     end
 
@@ -127,6 +180,22 @@ describe 'Vim Spec Runner' do
       end
     end
 
+    context 'with the teaspoon gem installed' do
+      before do
+        create_gemfile_with('teaspoon')
+      end
+
+      context 'with a .coffee spec file' do
+        it 'runs teaspoon, unfocused' do
+          vim.edit 'person_spec.coffee'
+
+          vim.command 'RunFocusedSpec'
+
+          expect(command).to end_with 'person_spec.coffee'
+        end
+      end
+    end
+
     it_should_behave_like 'a command with fallbacks', 'RunFocusedSpec'
   end
 
@@ -160,7 +229,7 @@ describe 'Vim Spec Runner' do
     end
 
     it 'uses "zeus" when a zeus.json file is present' do
-      create_file_in_root 'zeus.json'
+      set_up_zeus
 
       run_spec_file
 
@@ -169,7 +238,7 @@ describe 'Vim Spec Runner' do
 
     it 'is "zeus" even when Vim is not in the same directory as zeus.json' do
       subdirectory = 'sub/directory'
-      create_file_in_root 'zeus.json'
+      set_up_zeus
       create_git_repo
       FileUtils.mkdir_p subdirectory
 
@@ -180,12 +249,7 @@ describe 'Vim Spec Runner' do
     end
 
     it 'is "spring" when spring-commands-rspec is in the Gemfile.lock' do
-      create_file_in_root 'Gemfile.lock', <<-GEMFILE
-        GEM
-          remote: https://rubygems.org/
-          specs:
-            spring-commands-rspec (1.2.5)
-      GEMFILE
+      set_up_spring_for('rspec')
 
       run_spec_file
 
@@ -287,8 +351,25 @@ describe 'Vim Spec Runner' do
     previous_command
   end
 
+  def set_up_zeus
+    create_file_in_root 'zeus.json'
+  end
+
+  def set_up_spring_for(runner)
+    create_gemfile_with("spring-commands-#{runner}")
+  end
+
   def execute_plug_mapping(plug_mapping)
     vim.command %{execute "normal \\#{plug_mapping}"}
+  end
+
+  def create_gemfile_with(gem_name)
+    create_file_in_root 'Gemfile.lock', <<-GEMFILE
+      GEM
+        remote: https://rubygems.org/
+        specs:
+          #{gem_name} (1.2.5)
+    GEMFILE
   end
 
   def create_git_repo

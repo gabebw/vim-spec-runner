@@ -55,7 +55,7 @@ endfunction
 
 function! s:SpecCommand(is_focused)
   let runner = s:Runner()
-  let preloader = s:Preloader(runner)
+  let preloader = s:Preloader()
   let path = s:Path()
   let focus = s:Focus(runner, a:is_focused)
 
@@ -67,17 +67,33 @@ function! s:InSpecFile()
 endfunction
 
 function! s:Runner()
-  if match(@%, '_spec.rb$') != -1
+  if s:InRspecFile()
     return 'rspec'
+  elseif s:InJavascriptFile() && s:InGemfile('teaspoon')
+    if s:Preloader() ==# 'zeus'
+      return 'rake teaspoon'
+    else
+      return 'teaspoon'
+    endif
   else
     return s:NOT_IN_SPEC_FILE
   endif
 endfunction
 
-function! s:Preloader(runner)
+function! s:InRspecFile()
+  return match(@%, '_spec\.rb$') != -1
+endfunction
+
+function! s:InJavascriptFile()
+  return match(@%, '_spec\.\(js\.coffee\|js\|coffee\)$') != -1
+endfunction
+
+function! s:Preloader()
   if filereadable('zeus.json') || s:FileInProjectRoot('zeus.json')
     return 'zeus'
-  elseif s:FileContains('Gemfile.lock', 'spring-commands-rspec')
+  elseif s:InRspecFile() && s:InGemfile('spring-commands-rspec')
+    return 'spring'
+  elseif s:InJavascriptFile() && s:InGemfile('spring-commands-teaspoon')
     return 'spring'
   else
     return ''
@@ -89,15 +105,23 @@ function! s:Path()
 endfunction
 
 function! s:Focus(runner, focused)
-  if a:focused
+  if a:focused && s:RunnerSupportsFocusedSpecs(a:runner)
     return ':'.line('.')
   else
     return ''
   endif
 endfunction
 
+function! s:RunnerSupportsFocusedSpecs(runner)
+  return a:runner ==# 'rspec'
+endfunction
+
 function! s:FileContains(filename, text)
   return filereadable(a:filename) && match(readfile(a:filename), a:text) != -1
+endfunction
+
+function! s:InGemfile(gem)
+  return s:FileContains('Gemfile.lock', a:gem)
 endfunction
 
 function! s:FileInProjectRoot(filename)
