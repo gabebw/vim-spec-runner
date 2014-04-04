@@ -170,10 +170,8 @@ describe 'Vim Spec Runner' do
     it 'is "zeus" even when Vim is not in the same directory as zeus.json' do
       subdirectory = 'sub/directory'
       create_file_in_root 'zeus.json'
-      in_vim_root do
-        create_git_repo
-        FileUtils.mkdir_p subdirectory
-      end
+      create_git_repo
+      FileUtils.mkdir_p subdirectory
 
       vim.command "cd #{subdirectory}"
       run_spec_file
@@ -257,15 +255,7 @@ describe 'Vim Spec Runner' do
   end
 
   def create_file_in_root(name, contents='')
-    in_vim_root do
-      open(name, 'w') { |f| f.write(contents) }
-    end
-  end
-
-  def in_vim_root
-    Dir.chdir(vim_directory) do
-      yield
-    end
+    open(name, 'w') { |f| f.write(contents) }
   end
 
   def with_clean_vim
