@@ -16,3 +16,7 @@ Vimrunner::RSpec.configure do |config|
     vim
   end
 end
+
+RSpec.configure do |config|
+  config.order = :random
+end
