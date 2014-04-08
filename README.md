@@ -65,7 +65,7 @@ map <Leader>t <Plug>RunCurrentSpecFile
 Bundle 'gabebw/vim-spec-runner'
 ```
 
-...then the default mappings for the keys you've mapped will not be set.
+...then the plugin won't create default mappings for the keys you've mapped.
 
 
 ### Custom mappings
@@ -83,7 +83,7 @@ map <Leader>t <Plug>RunCurrentSpecFile
 
 " Use <Leader>u to run the current line in a spec. Remember that this runs the
 " most recent spec if it's not in a spec file!
-map <Leader>t <Plug>RunFocusedSpec
+map <Leader>u <Plug>RunFocusedSpec
 
 " Use <Leader>v to explicitly run the most recent spec
 map <Leader>v <Plug>RunMostRecentSpec
