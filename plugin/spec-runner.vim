@@ -101,7 +101,11 @@ function! s:Preloader()
 endfunction
 
 function! s:Path()
-  return @%
+  if s:Runner() ==# 'rake teaspoon'
+    return ' files=' . @%
+  else
+    return @%
+  end
 endfunction
 
 function! s:Focus(runner, focused)

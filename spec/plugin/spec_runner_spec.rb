@@ -63,6 +63,16 @@ describe 'Vim Spec Runner' do
 
           expect(command).to start_with 'zeus rake teaspoon'
         end
+
+        it 'correctly runs a single file' do
+          set_up_zeus
+
+          vim.edit "person_spec.coffee"
+          vim.command 'RunCurrentSpecFile'
+
+          expect(command).to end_with ' files=person_spec.coffee'
+        end
+
       end
 
       context 'and the spring-commands-teaspoon gem installed' do
