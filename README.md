@@ -8,6 +8,8 @@ execute a spec run command in any context you specify. The primary goal of
 vim-spec-runner is that it should Just Work (TM) for most of the workflows,
 configurations, and apps you use each day.
 
+It can run RSpec files or JavaScript files (with Teaspoon).
+
 * Efficient commands to run either a single spec, or a spec file
 * Explicit command allowing for re-running the last-run spec command
 * If the current file is not a spec file, re-runs the most recent spec
