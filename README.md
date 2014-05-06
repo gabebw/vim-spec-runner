@@ -10,6 +10,9 @@ configurations, and apps you use each day.
 
 It can run RSpec files or JavaScript files (with Teaspoon).
 
+Benefits
+--------
+
 * Efficient commands to run either a single spec, or a spec file
 * Explicit command allowing for re-running the last-run spec command
 * If the current file is not a spec file, re-runs the most recent spec
