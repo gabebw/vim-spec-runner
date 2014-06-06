@@ -210,9 +210,9 @@ describe 'Vim Spec Runner' do
   end
 
   context 'configuration' do
-    it 'uses the command executor override if present' do
-      executor_command = '!echo "{command}" > specific_file.txt'
-      vim.command "let g:spec_runner_executor='#{executor_command}'"
+    it 'uses the command dispatcher override if present' do
+      dispatcher_command = '!echo "{command}" > specific_file.txt'
+      vim.command "let g:spec_runner_dispatcher='#{dispatcher_command}'"
 
       run_spec_file
 
@@ -305,10 +305,10 @@ describe 'Vim Spec Runner' do
   end
 
   def configure_to_echo_command_to(file_name)
-    vim.command "let g:spec_runner_executor='#{spec_runner_executor(file_name)}'"
+    vim.command "let g:spec_runner_dispatcher='#{spec_runner_dispatcher(file_name)}'"
   end
 
-  def spec_runner_executor(file_name)
+  def spec_runner_dispatcher(file_name)
     "!echo {command} > #{file_name}"
   end
 

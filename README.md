@@ -16,7 +16,8 @@ Benefits
 
 * Has commands to run a single test case, run a whole spec file, or re-run the
   last spec command
-* If the current file is not a spec file, re-runs the most recent spec
+* If you're editing a non-spec file and you run `vim-spec-runner`, it
+  automatically falls back to running the most recent spec
 * Simple to use with any external command dispatcher, including Tmux ones like
   [vim-tmux-runner] or [tslime]
 * Automatically detects and uses preloaders ([zeus] and [spring])
@@ -49,7 +50,7 @@ There are three commands in the public API:
   re-runs the most recent command
 * `:RunMostRecentSpec` re-runs the most recent command
 
-All three commands use the `g:spec_runner_executor` variable, which is explained
+All three commands use the `g:spec_runner_dispatcher` variable, which is explained
 in the ["Configuration" section](#configuration).
 
 ### Custom mappings
@@ -76,12 +77,12 @@ Reasons, even though you're typing `map`, it's a normal-mode mapping.
 Configuration
 -------------
 
-The `g:spec_runner_executor` variable is used by all three public commands to
+The `g:spec_runner_dispatcher` variable is used by all three public commands to
 run specs. By default, it echoes the command and then runs it:
 
 ```vim
 " Default mapping. Echo the commmand then run it:
-let g:spec_runner_executor = '!echo "{command}" && {command}'
+let g:spec_runner_dispatcher = '!echo "{command}" && {command}'
 ```
 
 The `{command}` is replaced with the command to run.
@@ -91,13 +92,13 @@ choice:
 
 ```vim
 " Using vim-tmux-runner:
-let g:spec_runner_executor = 'call VtrSendCommand("{command}")'.
+let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'.
 
 " Using tslime.vim:
-let g:spec_runner_executor = 'call Send_to_Tmux("clear\n{command}\n")'
+let g:spec_runner_dispatcher = 'call Send_to_Tmux("clear\n{command}\n")'
 
 " Using vim-dispatch
-let g:spec_runner_executor = 'Dispatch {command}'
+let g:spec_runner_dispatcher = 'Dispatch {command}'
 ```
 
 By default, the plugin will `:write` the spec file before running it. To disable

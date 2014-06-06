@@ -6,8 +6,8 @@ let s:COMMAND_FAILED = -1
 let s:NOT_IN_SPEC_FILE = -2
 let s:WARNING_UNABLE_TO_DETERMINE_RUNNER = 'Unable to determine correct spec runner'
 
-if ! exists('g:spec_runner_executor')
-  let g:spec_runner_executor = '!echo "{command}" && {command}'
+if ! exists('g:spec_runner_dispatcher')
+  let g:spec_runner_dispatcher = '!echo "{command}" && {command}'
 endif
 
 function! s:RunCurrentSpecFile()
@@ -40,7 +40,7 @@ endfunction
 
 function! s:RunSpecCommand(command)
   let s:most_recent_command = a:command
-  let executable_command = substitute(g:spec_runner_executor, '{command}', a:command, 'g')
+  let executable_command = substitute(g:spec_runner_dispatcher, '{command}', a:command, 'g')
   call s:WriteIfEnabled()
   execute executable_command
 endfunction
