@@ -5,6 +5,10 @@ describe 'Vim Spec Runner' do
     configure_to_echo_command_to('command.txt')
   end
 
+  after(:each) do
+    vim.command 'bdelete!'
+  end
+
   context ':RunCurrentSpecFile' do
     it 'is mapped to <Leader>a' do
       plug_map = '<Plug>RunCurrentSpecFile'
@@ -337,6 +341,7 @@ describe 'Vim Spec Runner' do
     clean_vim.add_plugin(File.join(ROOT, 'plugin'), 'spec-runner.vim')
     yield(clean_vim)
   ensure
+    clean_vim.command 'bdelete!'
     clean_vim.kill
   end
 
