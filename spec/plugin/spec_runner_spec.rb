@@ -299,6 +299,23 @@ describe 'Vim Spec Runner' do
     end
   end
 
+  context 'with a custom command' do
+    it 'correctly detects the file and runs the write command' do
+      spec_file = 'my_spec.blorg'
+      vim.command "let g:spec_runner_available_runners['blorg'] = 'blorg'"
+      vim.command <<-EOFUNCTION
+        function! g:SpecRunner_detect_blorg()
+          return match(@%, '.blorg$') != -1
+        endfunction
+      EOFUNCTION
+
+      vim.edit 'my_spec.blorg'
+      vim.command 'RunCurrentSpecFile'
+
+      expect(command).to eq 'blorg my_spec.blorg'
+    end
+  end
+
   def run_spec_file(spec_file = 'my_spec.rb', vim_instance = vim)
     vim_instance.edit spec_file
     vim_instance.command 'RunCurrentSpecFile'

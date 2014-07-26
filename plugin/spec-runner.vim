@@ -6,9 +6,34 @@ let s:COMMAND_FAILED = -1
 let s:NOT_IN_SPEC_FILE = -2
 let s:WARNING_UNABLE_TO_DETERMINE_RUNNER = 'Unable to determine correct spec runner'
 
+let g:spec_runner_available_runners = {
+      \ 'rspec' : 'rspec',
+      \ 'teaspoon' : { 'no_preloader': 'teaspoon', 'zeus': 'rake teaspoon' },
+      \ }
+
 if ! exists('g:spec_runner_dispatcher')
   let g:spec_runner_dispatcher = '!echo "{command}" && {command}'
 endif
+
+function! g:SpecRunner_detect_teaspoon()
+  return s:InJavascriptFile() && s:InGemfile('teaspoon')
+endfunction
+
+function! g:SpecRunner_detect_rspec()
+  return s:InRspecFile()
+endfunction
+
+function! s:DetectRunnerName()
+  for runner_name in keys(g:spec_runner_available_runners)
+    let function_name = 'g:SpecRunner_detect_' . runner_name
+    execute 'let worked = ' . function_name . '()'
+    if worked
+      return runner_name
+    endif
+  endfor
+
+  return s:NOT_IN_SPEC_FILE
+endfunction
 
 function! s:RunCurrentSpecFile()
   call s:RunIfInSpecFile(s:UNFOCUSED)
@@ -67,16 +92,25 @@ function! s:InSpecFile()
 endfunction
 
 function! s:Runner()
-  if s:InRspecFile()
-    return 'rspec'
-  elseif s:InJavascriptFile() && s:InGemfile('teaspoon')
-    if s:Preloader() ==# 'zeus'
-      return 'rake teaspoon'
-    else
-      return 'teaspoon'
-    endif
-  else
+  let runner_name = s:DetectRunnerName()
+  if runner_name ==# s:NOT_IN_SPEC_FILE
     return s:NOT_IN_SPEC_FILE
+  else
+    let runner = g:spec_runner_available_runners[runner_name]
+    " If the runner is just 'rspec', use that.
+    if type(runner) == type('')
+      return runner
+    " Otherwise the runner might be
+    " { 'no_preloader': 'teaspoon', 'zeus': 'rake " teaspoon' },
+    " so we need to determine if we should use the preloader version
+    " or the normal version.
+    elseif type(runner) == type({})
+      if has_key(runner, s:Preloader())
+        return runner[s:Preloader()]
+      else
+        return runner['no_preloader']
+      endif
+    endif
   endif
 endfunction
 
