@@ -92,7 +92,7 @@ choice:
 
 ```vim
 " Using vim-tmux-runner:
-let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'.
+let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'
 
 " Using tslime.vim:
 let g:spec_runner_dispatcher = 'call Send_to_Tmux("clear\n{command}\n")'
