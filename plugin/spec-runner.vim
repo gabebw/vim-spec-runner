@@ -89,7 +89,7 @@ function! s:InJavascriptFile()
 endfunction
 
 function! s:Preloader()
-  if filereadable('zeus.json') || s:FileInProjectRoot('zeus.json')
+  if filereadable('zeus.json') || s:FileInProjectRoot('zeus.json') || filereadable('.zeus.sock') || s:FileInProjectRoot('.zeus.sock')
     return 'zeus'
   elseif s:InRspecFile() && s:InGemfile('spring-commands-rspec')
     return 'spring'

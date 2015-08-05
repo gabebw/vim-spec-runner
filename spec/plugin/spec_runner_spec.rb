@@ -246,6 +246,14 @@ describe 'Vim Spec Runner' do
       expect(command).to start_with 'zeus'
     end
 
+    it 'uses "zeus" when a .zeus.sock file is present' do
+      set_up_zeus(using_socket: true)
+
+      run_spec_file
+
+      expect(command).to start_with 'zeus'
+    end
+
     it 'is "zeus" even when Vim is not in the same directory as zeus.json' do
       subdirectory = 'sub/directory'
       set_up_zeus
@@ -361,8 +369,8 @@ describe 'Vim Spec Runner' do
     previous_command
   end
 
-  def set_up_zeus
-    create_file_in_root 'zeus.json'
+  def set_up_zeus using_socket: false
+    using_socket ? create_file_in_root('.zeus.sock') : create_file_in_root('zeus.json')
   end
 
   def set_up_spring_for(runner)
