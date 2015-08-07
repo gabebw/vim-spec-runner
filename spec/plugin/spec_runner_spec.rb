@@ -12,6 +12,7 @@ describe 'Vim Spec Runner' do
       vim.edit 'my_spec.rb'
 
       expect('<Leader>a').to normal_map_to(plug_map)
+
       execute_plug_mapping(plug_map)
       expect(command_was_run).to be_true
     end
@@ -369,8 +370,12 @@ describe 'Vim Spec Runner' do
     previous_command
   end
 
-  def set_up_zeus using_socket: false
-    using_socket ? create_file_in_root('.zeus.sock') : create_file_in_root('zeus.json')
+  def set_up_zeus(using_socket: false)
+    if using_socket
+      create_file_in_root('.zeus.sock')
+    else
+      create_file_in_root('zeus.json')
+    end
   end
 
   def set_up_spring_for(runner)
