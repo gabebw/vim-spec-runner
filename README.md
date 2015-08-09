@@ -112,10 +112,10 @@ that:
 let g:disable_write_on_spec_run = 1
 ```
 
-### `g:spec_runner_available_runners`
+### Custom commands for different spec types
 
-This variable tells the plugin what command to run based on the type of test
-it's running. Here's the default:
+The `g:spec_runner_available_runners` variable tells the plugin what command to
+run based on the type of test it's running. Here's the default:
 
 ```vim
 let g:spec_runner_available_runners = {
