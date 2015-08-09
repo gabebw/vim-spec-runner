@@ -14,6 +14,8 @@ It can run RSpec files or JavaScript files (with [Teaspoon]).
 Benefits
 --------
 
+* Customizable spec commands: if the plugin doesn't know about a spec type,
+  you can write your own adapter with a single function
 * Has commands to run a single test case, run a whole spec file, or re-run the
   last spec command
 * If you're editing a non-spec file and you run `vim-spec-runner`, it
@@ -22,7 +24,6 @@ Benefits
   [vim-tmux-runner] or [tslime]
 * Automatically detects and uses preloaders ([zeus] and [spring])
 * Saves the current file before running specs
-* Customizable spec commands
 
 [zeus]: https://github.com/burke/zeus
 [spring]: https://github.com/rails/spring
