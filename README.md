@@ -132,7 +132,7 @@ there. For example, if you want to run `cool_rspec` for rspec files, but use
 
 ```vim
 let g:spec_runner_available_runners['rspec'] = {
-      \ 'rspec : { 'no_preloader': cool_rspec 'spring 'spring_cool_rspec' }
+      \ 'rspec': { 'no_preloader': 'cool_rspec', 'spring': 'spring_cool_rspec' }
       \ }
 ```
 
