@@ -101,7 +101,7 @@ function! s:Runner()
     if type(runner) == type('')
       return runner
     " Otherwise the runner might be
-    " { 'no_preloader': 'teaspoon', 'zeus': 'rake " teaspoon' },
+    " { 'no_preloader': 'teaspoon', 'zeus': 'rake teaspoon' },
     " so we need to determine if we should use the preloader version
     " or the normal version.
     elseif type(runner) == type({})
