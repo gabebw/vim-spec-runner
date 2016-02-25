@@ -89,6 +89,10 @@ function! s:InJavascriptFile()
 endfunction
 
 function! s:Preloader()
+  if exists('g:spec_runner_preloader')
+    return g:spec_runner_preloader
+  endif
+
   if filereadable('zeus.json') || s:FileInProjectRoot('zeus.json') || filereadable('.zeus.sock') || s:FileInProjectRoot('.zeus.sock')
     return 'zeus'
   elseif s:InRspecFile() && s:InGemfile('spring-commands-rspec')
