@@ -122,7 +122,7 @@ let g:spec_runner_preloader = ''
 Running the plugin's tests
 --------------------------
 
-    rake
+    bundle exec rake
 
 If you get errors on OSX about `Vimrunner`, try installing MacVim then re-running the specs:
 
