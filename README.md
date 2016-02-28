@@ -85,9 +85,10 @@ run specs. By default, it echoes the command and then runs it:
 let g:spec_runner_dispatcher = '!echo "{command}" && {command}'
 ```
 
-The `{command}` is replaced with the command to run.
+`{command}` is a placeholder and will be replaced with the actual command to
+run.
 
-It's simple to configure it to run the spec command with your executor of
+You can configure this plugin to run the spec command with your dispatcher of
 choice:
 
 ```vim
@@ -106,6 +107,16 @@ that:
 
 ```vim
 let g:disable_write_on_spec_run = 1
+```
+
+This plugin will try to automatically determine your preloader (spring or zeus).
+Sometimes you need to override it, which you can do by setting
+`g:spec_runner_preloader`:
+
+```vim
+let g:spec_runner_preloader = './bin/spring'
+" Or disable preloading entirely:
+let g:spec_runner_preloader = ''
 ```
 
 Running the plugin's tests
